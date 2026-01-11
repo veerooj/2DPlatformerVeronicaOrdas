@@ -61,6 +61,10 @@ public class GameManager : MonoBehaviour
 
     void LoadLevel(int level, bool wantSurviveIncrease)
     {
+        if (survivedLevelsCount == 2)
+        {
+            SceneManager.LoadScene(2);
+        }
         LoadCanvas.SetActive(false);
         
         levels[currentLevelIndex].gameObject.SetActive(false);
@@ -87,7 +91,8 @@ public class GameManager : MonoBehaviour
     }
 
     void GameOverScreen()
-    {
+    { 
+        Destroy(player.gameObject);
        gameOverScreen.SetActive(true);
        survivedText.text = "YOU SURVIVED " + survivedLevelsCount + " LEVEL";
        if (survivedLevelsCount != 1)
@@ -98,11 +103,11 @@ public class GameManager : MonoBehaviour
 
     public void ResetGame()
     {
-        /*gameOverScreen.SetActive(false);
+        gameOverScreen.SetActive(false);
         survivedLevelsCount = 0;
         LoadLevel(0, false);
-        */
-        SceneManager.LoadScene("Level1");
+        
+        SceneManager.LoadScene(0);
 
     }
 
