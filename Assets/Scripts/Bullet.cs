@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
@@ -16,5 +17,15 @@ public class Bullet : MonoBehaviour
     {
         
     }
-    private void OnTrigger
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        Enemy enemy = other.GetComponent<Enemy>();
+        if (enemy)
+        {
+            enemy.TakeDamage(bulletDamage);
+            Destroy(gameObject);
+        }
+        
+    }
 }

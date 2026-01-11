@@ -21,6 +21,7 @@ public class PlayerHealth : MonoBehaviour
 
         spriteRenderer = GetComponent<SpriteRenderer>();
         GameManager.OnReset += ResetHealth;
+        HealthItem.OnHealthCollect += Heal;
     }
 
     // Update is called once per frame
@@ -70,5 +71,16 @@ public class PlayerHealth : MonoBehaviour
     void OnDestroy()
     {
         GameManager.OnReset -= ResetHealth;
+    }
+
+    void Heal(int amount)
+    {
+        currentHealth += amount;
+        if (currentHealth > maxHealth)
+        {
+            currentHealth = maxHealth;
+            
+        }
+        healthUI.UpdateHearts(currentHealth);
     }
 }

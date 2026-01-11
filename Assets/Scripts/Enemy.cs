@@ -1,5 +1,8 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using Random = System.Random;
 
 public class Enemy : MonoBehaviour
 {
@@ -15,10 +18,23 @@ public class Enemy : MonoBehaviour
 
     public int damage = 1;
 
+    public int enemyMaxHealth = 3;
+    private int enemyCurrentHealth;
+    private SpriteRenderer spriteRenderer;
+    private Color ogColor;
+    
+    //LOOT TABLE
+    public List<LootItem> lootTable = new List<LootItem>();
+
     void Start()
     {
+        
+        
         rb = GetComponent<Rigidbody2D>();
         player = GameObject.FindWithTag("Player").GetComponent<Transform>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        enemyCurrentHealth = enemyMaxHealth;
+        ogColor = spriteRenderer.color;
     }
 
     void Update()
@@ -69,4 +85,46 @@ public class Enemy : MonoBehaviour
             
         }
     }
+
+    public void TakeDamage(int damage)
+    {
+        enemyCurrentHealth -= damage;
+        StartCoroutine(FlashDamage());
+        if (enemyCurrentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    private IEnumerator FlashDamage()
+    {
+        spriteRenderer.color = Color.white;
+        yield return new WaitForSeconds(0.2f);
+        spriteRenderer.color = ogColor;
+    }
+
+    void Die()
+    {
+        foreach (LootItem lootItem in lootTable )
+        {
+            if (UnityEngine.Random.Range(0f, 100f) <= lootItem.dropChance)
+            {
+                InstantiateLoot(lootItem.itemPrefabs);
+            }
+
+            break;
+        }
+        Destroy(gameObject);
+    }
+
+    void InstantiateLoot(GameObject loot)
+    {
+        if (loot)
+        {
+            GameObject droppedLoot = Instantiate(loot, transform.position, Quaternion.identity);
+
+            droppedLoot.GetComponent<SpriteRenderer>().color = Color.yellow;
+        }
+    }
+    
 }
